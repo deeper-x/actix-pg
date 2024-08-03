@@ -22,13 +22,16 @@ mod server {
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
 
+    // build server configuration via config::Configuration implementations
     let config = ServerConfig::builder()
         .override_with(EnvSource::new())
         .try_build()
         .unwrap();
 
+    // database setup, configuring pool
     let pool = config.pg.create_pool(None, NoTls).unwrap();
 
+    // http server instance setup, linking to `/users' controller its routes (add & get)
     let server = HttpServer::new(move || {
         App::new().app_data(web::Data::new(pool.clone())).service(
             web::resource("/users")
@@ -38,6 +41,7 @@ async fn main() -> std::io::Result<()> {
     })
     .bind(config.server_addr.clone())?
     .run();
+
     println!("Server running at http://{}/", config.server_addr);
 
     server.await

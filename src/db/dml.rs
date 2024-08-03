@@ -4,9 +4,9 @@ use tokio_pg_mapper::FromTokioPostgresRow;
 use crate::{db::models::User, settings::errors::MyError};
 
 pub async fn get_users(client: &Client) -> Result<Vec<User>, MyError> {
-    let stmt = include_str!("./sql/get_users.sql");
-    let stmt = stmt.replace("$table_fields", &User::sql_table_fields());
-    let stmt = client.prepare(&stmt).await.unwrap();
+    let _stmt = include_str!("./sql/get_users.sql");
+    let _stmt = _stmt.replace("$table_fields", &User::sql_table_fields());
+    let stmt = client.prepare(&_stmt).await.unwrap();
 
     let results = client
         .query(&stmt, &[])
